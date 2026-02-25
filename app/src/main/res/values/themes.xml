@@ -1,0 +1,20 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Pulse" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/md_theme_background</item>
+        <item name="android:navigationBarColor">@color/md_theme_background</item>
+        <item name="colorPrimary">@color/md_theme_primary</item>
+        <item name="colorPrimaryVariant">@color/md_theme_primary_variant</item>
+        <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
+        <item name="android:windowBackground">@color/md_theme_background</item>
+        <item name="android:textColorPrimary">@color/md_theme_onSurface</item>
+        <item name="android:textColorSecondary">@color/md_theme_onSurface</item>
+        <item name="materialButtonStyle">@style/PulseButton</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="PulseButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">@drawable/bg_button_gradient</item>
+        <item name="android:textColor">@color/md_theme_onPrimary</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+</resources>

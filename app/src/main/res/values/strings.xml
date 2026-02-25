@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Pulse</string>
+    <string name="emotion_love">Love</string>
+    <string name="emotion_miss_you">Miss You</string>
+    <string name="emotion_hug">Hug</string>
+    <string name="emotion_angry">Angry</string>
+    <string name="emotion_good_night">Good Night</string>
+    <string name="send_signal">Send Signal</string>
+    <string name="pair_with_partner">Pair with Partner</string>
+    <string name="couple_id_hint">Couple ID</string>
+    <string name="pair_button">Pair</string>
+    <string name="auth_button">Sign In</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="status_waiting">Waiting for partner…</string>
+    <string name="status_ready">Paired and ready</string>
+    <string name="login_title">Welcome back</string>
+    <string name="login_subtitle">Private vibes only</string>
+    <string name="signup_title">Create account</string>
+    <string name="signup_subtitle">Stay private, stay close</string>
+    <string name="pair_title">Connect with Partner</string>
+    <string name="pair_subtitle">Enter your shared Couple ID</string>
+    <string name="signup_cta">Sign Up</string>
+    <string name="go_to_signup">Need an account? Sign up</string>
+    <string name="go_to_login">Already have an account? Log in</string>
+</resources>

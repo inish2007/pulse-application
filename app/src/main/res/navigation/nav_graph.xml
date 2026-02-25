@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.pulse.app.ui.LoginFragment"
+        android:label="Login">
+        <action
+            android:id="@+id/action_login_to_signup"
+            app:destination="@id/signupFragment" />
+        <action
+            android:id="@+id/action_login_to_pair"
+            app:destination="@id/pairFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signupFragment"
+        android:name="com.pulse.app.ui.SignupFragment"
+        android:label="Signup">
+        <action
+            android:id="@+id/action_signup_to_login"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_signup_to_pair"
+            app:destination="@id/pairFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pairFragment"
+        android:name="com.pulse.app.ui.PairFragment"
+        android:label="Pair">
+        <action
+            android:id="@+id/action_pair_to_signal"
+            app:destination="@id/signalFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signalFragment"
+        android:name="com.pulse.app.ui.SignalFragment"
+        android:label="Signal" />
+</navigation>

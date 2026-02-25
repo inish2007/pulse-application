@@ -1,0 +1,32 @@
+# Gradle
+.gradle/
+/build/
+/app/build/
+
+# IDE
+.idea/
+*.iml
+
+# Local config
+local.properties
+
+# Keystore / creds
+*.jks
+*.keystore
+*.pem
+
+# Generated
+**/build/
+captures/
+.externalNativeBuild/
+
+# Misc
+*.log
+.DS_Store
+Thumbs.db
+
+# Firebase
+google-services.json
+
+# Kotlin compile caches
+.kotlin/
