@@ -13,6 +13,10 @@ class SessionManager @Inject constructor(@ApplicationContext context: Context) {
 
     fun coupleId(): String? = prefs.getString(KEY_COUPLE_ID, null)
 
+    fun clear() {
+        prefs.edit().remove(KEY_COUPLE_ID).apply()
+    }
+
     companion object {
         private const val KEY_COUPLE_ID = "couple_id"
     }

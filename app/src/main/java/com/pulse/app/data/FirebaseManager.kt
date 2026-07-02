@@ -1,5 +1,6 @@
 package com.pulse.app.data
 
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,6 +31,11 @@ class FirebaseManager(
             auth.createUserWithEmailAndPassword(email, password).await()
             auth.currentUser ?: throw IllegalStateException("User missing after sign-up")
         }
+    }
+
+    suspend fun signInWithCredential(credential: AuthCredential): FirebaseUser {
+        auth.signInWithCredential(credential).await()
+        return auth.currentUser ?: throw IllegalStateException("User missing after credential sign-in")
     }
 
     suspend fun ensureUserDoc(
@@ -106,5 +112,9 @@ class FirebaseManager(
         return snap.documents.mapNotNull { doc ->
             doc.toObject(Signal::class.java)?.let { signal -> doc.id to signal }
         }
+    }
+
+    fun signOut() {
+        auth.signOut()
     }
 }

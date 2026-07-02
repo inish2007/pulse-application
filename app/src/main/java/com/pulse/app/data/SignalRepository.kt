@@ -1,5 +1,6 @@
 package com.pulse.app.data
 
+import com.google.firebase.auth.AuthCredential
 import com.pulse.app.util.EncryptionHelper
 import com.pulse.app.util.KeyStoreManager
 import kotlinx.coroutines.tasks.await
@@ -14,6 +15,9 @@ class SignalRepository @Inject constructor(
 
     suspend fun signIn(email: String, password: String) =
         firebaseManager.signIn(email, password)
+
+    suspend fun signInWithGoogle(credential: AuthCredential) =
+        firebaseManager.signInWithCredential(credential)
 
     suspend fun refreshToken() = firebaseManager.refreshMessagingToken()
 
@@ -60,5 +64,30 @@ class SignalRepository @Inject constructor(
             .filter { (_, signal) -> signal.senderId != currentUserId }
     }
 
-    fun currentUserId(): String? = firebaseManager.currentUser()?.uid
+    suspend fun currentUserId(): String? = firebaseManager.currentUser()?.uid
+
+    suspend fun createInvite(): com.pulse.app.data.InviteResponse = apiService.createInvite()
+
+    suspend fun joinInvite(token: String): com.pulse.app.data.JoinResponse = apiService.joinInvite(token)
+
+    // ===== COUPLE CODE METHODS =====
+    suspend fun createCoupleCode(): com.pulse.app.data.CoupleCodeResponse = 
+        apiService.createCoupleCode()
+
+    suspend fun joinCoupleCode(code: String): com.pulse.app.data.JoinResponse = 
+        apiService.joinCoupleCode(code)
+
+    suspend fun validateCoupleCode(code: String): com.pulse.app.data.ValidateCodeResponse = 
+        apiService.validateCoupleCode(code)
+
+    // ===== SIGNAL/VIBRATION METHODS =====
+    suspend fun sendVibrationSignal(coupleId: String, signalType: String = "vibrate"): SendSignalResponse {
+        return apiService.sendSignal(SendSignalRequest(signalType, coupleId))
+    }
+
+    suspend fun getPendingSignals(coupleId: String): GetSignalsResponse = 
+        apiService.getPendingSignals(coupleId)
+
+    suspend fun acknowledgeSignalReceived(signalId: String): AcknowledgeSignalResponse = 
+        apiService.acknowledgeSignal(signalId)
 }

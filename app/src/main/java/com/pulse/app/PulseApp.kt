@@ -6,25 +6,35 @@ import android.app.NotificationManager
 import android.content.Context
 import android.media.AudioAttributes
 import android.os.Build
-import dagger.hilt.android.HiltAndroidApp
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
 class PulseApp : Application(), Configuration.Provider {
 
-    @Inject lateinit var workerFactory: HiltWorkerFactory
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 
     override fun onCreate() {
         super.onCreate()
+        // Global crash handler: log and delegate to default handler
+        val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            try {
+                android.util.Log.e("PulseApp", "Uncaught exception in thread ${thread.name}", throwable)
+            } catch (_: Exception) {
+            }
+            defaultHandler?.uncaughtException(thread, throwable)
+        }
         createSignalChannel()
     }
-
-    override fun getWorkManagerConfiguration(): Configuration =
-        Configuration.Builder()
-            .setWorkerFactory(workerFactory)
-            .build()
 
     private fun createSignalChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

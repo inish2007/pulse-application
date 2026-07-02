@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="true">api.pulse.app</domain>
+        <domain includeSubdomains="true">pluse-app-backend.onrender.com</domain>
         <pin-set expiration="2027-01-01">
-            <!-- Replace with real SHA-256 pins from prod cert chain -->
-            <pin digest="SHA-256">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</pin>
-            <pin digest="SHA-256">BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=</pin>
+            <pin digest="SHA-256">IX2/a47sFHkF9jewioc5OzEDzS0dNQjNMCX8PCQ26Pg=</pin>
+            <pin digest="SHA-256">kIdp6NNEd8wsugYyyIYFsi1ylMCED3hZbSR8ZFsa/A4=</pin>
         </pin-set>
     </domain-config>
 </network-security-config>

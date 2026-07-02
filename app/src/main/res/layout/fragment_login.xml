@@ -98,6 +98,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/googleSignInButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/loginButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
     <TextView
         android:id="@+id/goToSignup"
         android:layout_width="wrap_content"
@@ -105,7 +114,7 @@
         android:text="@string/go_to_signup"
         android:textColor="@color/md_theme_accent"
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/loginButton"
+        app:layout_constraintTop_toBottomOf="@id/googleSignInButton"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="12dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

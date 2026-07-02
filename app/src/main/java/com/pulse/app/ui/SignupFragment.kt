@@ -16,7 +16,8 @@ class SignupFragment : Fragment() {
 
     private var _binding: FragmentSignupBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: MainViewModel by activityViewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
+    private val authViewModel: com.pulse.app.auth.AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +45,7 @@ class SignupFragment : Fragment() {
         binding.signupPassword.addTextChangedListener(watcher)
 
         binding.signupButton.setOnClickListener {
-            viewModel.signUp(
+            authViewModel.login(
                 binding.signupEmail.text.toString(),
                 binding.signupPassword.text.toString()
             )
@@ -55,10 +56,28 @@ class SignupFragment : Fragment() {
         }
     }
 
+    private var lastAuthType: String? = null
+
     private fun observeState() {
-        viewModel.busy.observe(viewLifecycleOwner) { busy ->
-            binding.signupProgress.visibility = if (busy) View.VISIBLE else View.GONE
-            binding.signupButton.isEnabled = !busy && fieldsValid()
+        authViewModel.state.observe(viewLifecycleOwner) { state ->
+            val type = state::class.simpleName
+            if (type == lastAuthType) return@observe
+            lastAuthType = type
+
+            when (state) {
+                is com.pulse.app.auth.AuthState.Loading -> binding.signupProgress.visibility = View.VISIBLE
+                is com.pulse.app.auth.AuthState.Authenticated -> {
+                    binding.signupProgress.visibility = View.GONE
+                    val nav = findNavController()
+                    nav.popBackStack(R.id.signupFragment, true)
+                    nav.navigate(R.id.action_signup_to_pair)
+                }
+                else -> binding.signupProgress.visibility = View.GONE
+            }
+            binding.signupButton.isEnabled = fieldsValid()
+            if (state is com.pulse.app.auth.AuthState.Error) {
+                mainViewModel.showToast(state.message)
+            }
         }
     }
 

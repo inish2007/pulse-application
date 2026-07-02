@@ -17,7 +17,13 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"https://api.pulse.app/\"")
+
+        buildConfigField("String", "BASE_URL", "\"https://pluse-app-backend.onrender.com/\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
     }
 
     buildTypes {
@@ -31,10 +37,6 @@ android {
         debug {
             isMinifyEnabled = false
         }
-    }
-
-    buildFeatures {
-        viewBinding = true
     }
 
     compileOptions {
@@ -76,6 +78,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-functions-ktx")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")

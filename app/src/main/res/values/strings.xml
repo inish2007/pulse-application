@@ -23,4 +23,6 @@
     <string name="signup_cta">Sign Up</string>
     <string name="go_to_signup">Need an account? Sign up</string>
     <string name="go_to_login">Already have an account? Log in</string>
+    <string name="google_sign_in">Sign in with Google</string>
+    <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID</string>
 </resources>

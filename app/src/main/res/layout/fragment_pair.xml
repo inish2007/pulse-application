@@ -38,30 +38,75 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="4dp" />
 
+    <TextView
+        android:id="@+id/myCodeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Invite Code:"
+        android:textColor="@color/md_theme_onSurface"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/pairSubtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="24dp" />
+
+    <TextView
+        android:id="@+id/myCodeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="------"
+        android:textColor="@color/md_theme_primary_variant"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.2"
+        app:layout_constraintTop_toBottomOf="@id/myCodeLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/shareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share Link"
+        android:backgroundTint="@color/md_theme_primary"
+        android:textColor="@color/md_theme_onPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/myCodeText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/myCodeLabel" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/md_theme_accent"
+        app:layout_constraintTop_toBottomOf="@id/myCodeText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp" />
+
     <EditText
         android:id="@+id/coupleIdField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/couple_id_hint"
+        android:hint="Enter Partner's Code"
         android:background="@drawable/bg_input"
         android:textColor="@color/md_theme_onSurface"
         android:textColorHint="@color/md_theme_accent"
         android:padding="16dp"
-        android:inputType="text"
-        app:layout_constraintTop_toBottomOf="@id/pairSubtitle"
+        android:inputType="textCapCharacters"
+        app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="24dp" />
 
     <Button
-        android:id="@+id/pairButton"
+        android:id="@+id/joinButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/pair_button"
+        android:text="Join Partner"
         android:background="@drawable/bg_button_gradient"
         android:textAllCaps="false"
         android:textSize="16sp"
-        android:enabled="false"
         app:layout_constraintTop_toBottomOf="@id/coupleIdField"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +118,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/pairButton"
+        app:layout_constraintTop_toBottomOf="@id/joinButton"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="12dp" />
 
@@ -89,7 +134,7 @@
         android:text="Waiting for partner…"
         android:textSize="14sp"
         android:textColor="@color/md_theme_accent"
-        app:layout_constraintTop_toBottomOf="@id/pairButton"
+        app:layout_constraintTop_toBottomOf="@id/joinButton"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="12dp" />
 

@@ -9,8 +9,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import android.annotation.SuppressLint
+import android.view.MotionEvent
 import com.pulse.app.R
 import com.pulse.app.databinding.FragmentPairBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class PairFragment : Fragment() {
 
@@ -29,49 +34,81 @@ class PairFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.loadSavedCoupleId()
+        // Auto-generate a code if we are waiting for a partner
+        viewModel.createInviteLink()
         setupListeners()
         observeState()
     }
 
-    private fun setupListeners() {
-        val watcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                toggleButton()
+    @SuppressLint("ClickableViewAccessibility")
+    private fun applyHoverEffect(button: View) {
+        button.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start()
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).start()
+                }
             }
-            override fun afterTextChanged(s: Editable?) {}
+            false
         }
-        binding.coupleIdField.addTextChangedListener(watcher)
+    }
 
-        binding.pairButton.setOnClickListener {
-            viewModel.pair(binding.coupleIdField.text.toString(), partnerId = null)
+    private fun setupListeners() {
+        applyHoverEffect(binding.shareButton)
+        applyHoverEffect(binding.joinButton)
+
+        binding.shareButton.setOnClickListener {
+            val link = viewModel.inviteLink.value
+            if (link != null) {
+                val shareIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(android.content.Intent.EXTRA_SUBJECT, "Join me on Pulse")
+                    putExtra(android.content.Intent.EXTRA_TEXT, "Connect with me ❤️: \nCode: ${viewModel.inviteCode.value} \nLink: $link")
+                }
+                startActivity(android.content.Intent.createChooser(shareIntent, "Share Invite"))
+            }
+        }
+        
+        binding.joinButton.setOnClickListener {
+            val code = binding.coupleIdField.text.toString().trim()
+            if (code.isNotEmpty()) {
+                viewModel.consumeInviteLink(code)
+            }
         }
     }
 
     private fun observeState() {
-        viewModel.coupleId.observe(viewLifecycleOwner) { id ->
-            if (id != null && binding.coupleIdField.text.isNullOrBlank()) {
-                binding.coupleIdField.setText(id)
-                binding.coupleIdField.setSelection(id.length)
+        viewModel.inviteCode.observe(viewLifecycleOwner) { code ->
+            if (code != null) {
+                binding.myCodeText.text = code
             }
         }
         viewModel.status.observe(viewLifecycleOwner) { status ->
-            binding.statusLabel.text = status.ifBlank { getString(R.string.status_waiting) }
-            val color = when {
-                status.contains("Connected", true) -> R.color.md_theme_status_green
-                status.contains("Invalid", true) -> R.color.md_theme_status_red
-                else -> R.color.md_theme_status_amber
+            if (status.contains("Connected", true)) {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    binding.statusLabel.text = "Connecting..."
+                    delay(400)
+                    binding.statusLabel.text = "Partner Found..."
+                    delay(500)
+                    binding.statusLabel.text = "Connected ❤️"
+                    binding.statusLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_status_green))
+                }
+            } else {
+                binding.statusLabel.text = status.ifBlank { getString(R.string.status_waiting) }
+                val color = when {
+                    status.contains("Invalid", true) -> R.color.md_theme_status_red
+                    else -> R.color.md_theme_status_amber
+                }
+                binding.statusLabel.setTextColor(ContextCompat.getColor(requireContext(), color))
             }
-            binding.statusLabel.setTextColor(ContextCompat.getColor(requireContext(), color))
         }
         viewModel.busy.observe(viewLifecycleOwner) { busy ->
-            binding.pairButton.isEnabled = !busy && binding.coupleIdField.text.isNullOrBlank().not()
+            binding.shareButton.isEnabled = !busy
+            binding.joinButton.isEnabled = !busy
             binding.pairLoading.visibility = if (busy) View.VISIBLE else View.GONE
         }
-    }
-
-    private fun toggleButton() {
-        binding.pairButton.isEnabled = binding.coupleIdField.text.isNullOrBlank().not()
     }
 
     override fun onDestroyView() {
