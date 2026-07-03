@@ -5,12 +5,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
+import com.pulse.app.auth.AuthRepository
 import com.pulse.app.data.FirebaseManager
 import com.pulse.app.data.SignalRepository
 import com.pulse.app.util.EncryptionHelper
 import com.pulse.app.util.KeyStoreManager
 import com.pulse.app.util.SessionManager
 import com.pulse.app.util.VibrationManager
+import com.pulse.app.auth.DeviceRegistrationManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -71,11 +73,25 @@ object AppModule {
     @Provides
     @Singleton
     fun provideSignalRepository(
+        authRepository: AuthRepository,
+        apiService: com.pulse.app.data.ApiService,
         firebaseManager: FirebaseManager,
         encryptionHelper: EncryptionHelper,
-        keyStoreManager: KeyStoreManager,
+        keyStoreManager: KeyStoreManager
+    ): SignalRepository = SignalRepository(
+        authRepository,
+        apiService,
+        encryptionHelper,
+        keyStoreManager,
+        firebaseManager
+    )
+
+    @Provides
+    @Singleton
+    fun provideDeviceRegistrationManager(
+        messaging: FirebaseMessaging,
         apiService: com.pulse.app.data.ApiService
-    ): SignalRepository = SignalRepository(firebaseManager, encryptionHelper, keyStoreManager, apiService)
+    ): DeviceRegistrationManager = DeviceRegistrationManager(messaging, apiService)
 
     @Provides
     fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO

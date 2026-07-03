@@ -44,25 +44,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         maybeRequestNotificationPermission()
         observeNavigation()
-        handleDeepLink(intent)
         schedulePendingSync()
     }
 
     override fun onNewIntent(intent: android.content.Intent) {
         super.onNewIntent(intent)
-        handleDeepLink(intent)
-    }
-
-    private fun handleDeepLink(intent: android.content.Intent?) {
-        if (intent?.action == android.content.Intent.ACTION_VIEW) {
-            val data = intent.data
-            if (data?.scheme == "https" && data.host == "pulse.app" && data.path?.startsWith("/invite") == true) {
-                val token = data.lastPathSegment
-                if (token != null) {
-                    viewModel.consumeInviteLink(token)
-                }
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -125,7 +111,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.toast.observe(this) { msg ->
-            msg?.let { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
+            msg?.let { Toast.makeText(this, it.getContentIfNotHandled() ?: return@let, Toast.LENGTH_SHORT).show() }
         }
 
         // Observe global auth state to handle logout navigation and clear backstack

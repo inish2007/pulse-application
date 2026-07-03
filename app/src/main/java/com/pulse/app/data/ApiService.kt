@@ -1,109 +1,116 @@
 package com.pulse.app.data
 
+import com.squareup.moshi.Json
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ApiService {
+    @POST("auth/login")
+    suspend fun login(@Body body: FirebaseLoginRequestDto): AuthLoginResponseDto
 
-    @POST("signals/{id}/ack")
-    suspend fun acknowledge(
-        @Path("id") signalId: String,
-        @Body body: AckRequest
-    )
+    @GET("me/code")
+    suspend fun getMyPersonalCode(): PersonalCodeResponseDto
+
+    @POST("devices/register")
+    suspend fun registerDevice(@Body body: RegisterDeviceRequestDto): SuccessResponseDto
+
+    @POST("devices/unregister")
+    suspend fun unregisterDevice(@Body body: UnregisterDeviceRequestDto): SuccessResponseDto
+
+    @POST("couple/connect")
+    suspend fun connectCouple(@Body body: ConnectCoupleRequestDto): ConnectCoupleResponseDto
+
+    @POST("couple/disconnect")
+    suspend fun disconnectCouple(): SuccessResponseDto
+
+    @POST("signals/send")
+    suspend fun sendSignal(@Body body: SendSignalRequestDto): SendSignalResponseDto
 
     @GET("signals/pending")
-    suspend fun pendingSignals(): List<PendingSignalDto>
+    suspend fun getPendingSignals(): GetSignalsResponseDto
 
-    @POST("couple/invite")
-    suspend fun createInvite(): InviteResponse
-
-    @POST("couple/join/{token}")
-    suspend fun joinInvite(@Path("token") token: String): JoinResponse
-
-    @POST("couple/code/create")
-    suspend fun createCoupleCode(): CoupleCodeResponse
-
-    @POST("couple/code/join/{code}")
-    suspend fun joinCoupleCode(@Path("code") code: String): JoinResponse
-
-    @GET("couple/code/validate/{code}")
-    suspend fun validateCoupleCode(@Path("code") code: String): ValidateCodeResponse
-
-    @POST("signal/send")
-    suspend fun sendSignal(@Body body: SendSignalRequest): SendSignalResponse
-
-    @GET("signal/pending/{coupleId}")
-    suspend fun getPendingSignals(@Path("coupleId") coupleId: String): GetSignalsResponse
-
-    @POST("signal/{signalId}/acknowledge")
-    suspend fun acknowledgeSignal(@Path("signalId") signalId: String): AcknowledgeSignalResponse
+    @POST("signals/{id}/ack")
+    suspend fun acknowledgeSignal(@Path("id") signalId: String): AcknowledgeSignalResponseDto
 }
 
-data class AckRequest(
-    val deliveredAt: String,
-    val deviceId: String
+data class FirebaseLoginRequestDto(
+    val firebaseToken: String
 )
 
-data class PendingSignalDto(
-    val signalId: String,
-    val coupleId: String,
-    val encEmotion: String,
-    val iv: String,
-    val alg: String,
-    val sentAt: String
-)
-
-data class InviteResponse(
+data class AuthLoginResponseDto(
     val success: Boolean,
-    val link: String,
-    val code: String,
-    val expires_at: String
+    val token: String,
+    val expiresIn: String,
+    val user: AuthUserDto
 )
 
-data class CoupleCodeResponse(
-    val success: Boolean,
-    val code: String,
-    val couple_id: String,
-    val expires_at: String
-)
-
-data class JoinResponse(
-    val success: Boolean,
-    val couple_id: String
-)
-
-data class ValidateCodeResponse(
-    val valid: Boolean,
-    val couple_id: String? = null,
-    val creator_id: String? = null,
-    val is_full: Boolean? = null
-)
-
-data class SendSignalRequest(
-    val signal_type: String,
-    val couple_id: String
-)
-
-data class SendSignalResponse(
-    val success: Boolean,
-    val signal_id: String
-)
-
-data class Signal(
+data class AuthUserDto(
     val id: String,
-    val sender_id: String,
-    val signal_type: String,
-    val created_at: String,
-    val acknowledged_at: String? = null
+    @Json(name = "firebaseUid") val firebaseUid: String,
+    val name: String,
+    val email: String,
+    @Json(name = "personalCode") val personalCode: String,
+    @Json(name = "coupleId") val coupleId: String?
 )
 
-data class GetSignalsResponse(
+data class PersonalCodeResponseDto(
     val success: Boolean,
-    val signals: List<Signal>
+    val personalCode: String
 )
 
-data class AcknowledgeSignalResponse(
+data class RegisterDeviceRequestDto(
+    val fcmToken: String,
+    val platform: String
+)
+
+data class UnregisterDeviceRequestDto(
+    val fcmToken: String
+)
+
+data class ConnectCoupleRequestDto(
+    val personalCode: String
+)
+
+data class PartnerDto(
+    val id: String,
+    val name: String,
+    val personalCode: String
+)
+
+data class ConnectCoupleResponseDto(
+    val success: Boolean,
+    val coupleId: String,
+    val partner: PartnerDto
+)
+
+data class SuccessResponseDto(
+    val success: Boolean
+)
+
+data class SendSignalRequestDto(
+    @Json(name = "signal_type") val signalType: String
+)
+
+data class SendSignalResponseDto(
+    val success: Boolean,
+    @Json(name = "signal_id") val signalId: String
+)
+
+data class SignalDto(
+    val id: String,
+    @Json(name = "sender_id") val senderId: String,
+    @Json(name = "signal_type") val signalType: String,
+    @Json(name = "created_at") val createdAt: String,
+    @Json(name = "acknowledged_at") val acknowledgedAt: String? = null
+)
+
+data class GetSignalsResponseDto(
+    val success: Boolean,
+    val signals: List<SignalDto>
+)
+
+data class AcknowledgeSignalResponseDto(
     val success: Boolean
 )

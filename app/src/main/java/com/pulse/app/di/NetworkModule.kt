@@ -2,7 +2,8 @@ package com.pulse.app.di
 
 import com.pulse.app.BuildConfig
 import com.pulse.app.data.ApiService
-import com.pulse.app.util.TokenStore
+import com.pulse.app.auth.BackendAuthInterceptor
+import com.pulse.app.auth.SecureTokenStore
 import android.util.Log
 import dagger.Module
 import dagger.Provides
@@ -13,16 +14,13 @@ import okhttp3.ConnectionSpec
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class AuthInterceptor
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -39,20 +37,6 @@ object NetworkModule {
             .add("pluse-app-backend.onrender.com", "sha256/IX2/a47sFHkF9jewioc5OzEDzS0dNQjNMCX8PCQ26Pg=")
             .add("pluse-app-backend.onrender.com", "sha256/kIdp6NNEd8wsugYyyIYFsi1ylMCED3hZbSR8ZFsa/A4=")
             .build()
-
-    @Provides
-    @Singleton
-    @AuthInterceptor
-    fun provideAuthInterceptor(tokenStore: TokenStore): Interceptor = Interceptor { chain ->
-        val reqId = UUID.randomUUID().toString()
-        val builder = chain.request().newBuilder()
-            .addHeader("X-Request-Id", reqId)
-        val token = tokenStore.access()
-        if (token != null) {
-            builder.addHeader("Authorization", "Bearer $token")
-        }
-        chain.proceed(builder.build())
-    }
 
     @Provides
     @Singleton
@@ -90,7 +74,7 @@ object NetworkModule {
     @Singleton
     fun provideOkHttp(
         certificatePinner: CertificatePinner,
-        @AuthInterceptor authInterceptor: Interceptor,
+        backendAuthInterceptor: BackendAuthInterceptor,
         @BackoffInterceptor backoffInterceptor: Interceptor
     ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
@@ -105,7 +89,7 @@ object NetworkModule {
             .writeTimeout(20, TimeUnit.SECONDS)
             .retryOnConnectionFailure(false)
             .addInterceptor(backoffInterceptor)
-            .addInterceptor(authInterceptor)
+            .addInterceptor(backendAuthInterceptor)
             .addInterceptor(logging)
             .build()
     }
@@ -116,7 +100,11 @@ object NetworkModule {
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(client)
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(
+                Moshi.Builder()
+                    .addLast(KotlinJsonAdapterFactory())
+                    .build()
+            ))
             .build()
 
     @Provides
@@ -126,6 +114,10 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideWebSocketClient(client: OkHttpClient): com.pulse.app.data.WebSocketClient =
-        com.pulse.app.data.WebSocketClient(client)
+    fun provideWebSocketClient(
+        client: OkHttpClient,
+        apiService: ApiService,
+        tokenStore: SecureTokenStore
+    ): com.pulse.app.data.WebSocketClient =
+        com.pulse.app.data.WebSocketClient(client, apiService, tokenStore)
 }

@@ -1,21 +1,17 @@
 package com.pulse.app.ui
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.MotionEvent
 import com.pulse.app.R
 import com.pulse.app.databinding.FragmentPairBinding
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class PairFragment : Fragment() {
 
@@ -33,9 +29,7 @@ class PairFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.loadSavedCoupleId()
-        // Auto-generate a code if we are waiting for a partner
-        viewModel.createInviteLink()
+        viewModel.loadInitialData()
         setupListeners()
         observeState()
     }
@@ -60,52 +54,43 @@ class PairFragment : Fragment() {
         applyHoverEffect(binding.joinButton)
 
         binding.shareButton.setOnClickListener {
-            val link = viewModel.inviteLink.value
-            if (link != null) {
-                val shareIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+            val code = viewModel.personalCode.value
+            if (code != null) {
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
-                    putExtra(android.content.Intent.EXTRA_SUBJECT, "Join me on Pulse")
-                    putExtra(android.content.Intent.EXTRA_TEXT, "Connect with me ❤️: \nCode: ${viewModel.inviteCode.value} \nLink: $link")
+                    putExtra(Intent.EXTRA_SUBJECT, "Connect on Pulse")
+                    putExtra(Intent.EXTRA_TEXT, "Hey! Use my personal code to connect on Pulse: $code")
                 }
-                startActivity(android.content.Intent.createChooser(shareIntent, "Share Invite"))
+                startActivity(Intent.createChooser(shareIntent, "Share Code"))
             }
         }
         
         binding.joinButton.setOnClickListener {
-            val code = binding.coupleIdField.text.toString().trim()
+            val code = binding.coupleIdField.text.toString().trim().uppercase()
             if (code.isNotEmpty()) {
-                viewModel.consumeInviteLink(code)
+                viewModel.connectCouple(code)
+            } else {
+                viewModel.showToast("Please enter a code")
             }
         }
     }
 
     private fun observeState() {
-        viewModel.inviteCode.observe(viewLifecycleOwner) { code ->
-            if (code != null) {
-                binding.myCodeText.text = code
-            }
+        viewModel.personalCode.observe(viewLifecycleOwner) { code ->
+            binding.myCodeText.text = code ?: "------"
         }
+
         viewModel.status.observe(viewLifecycleOwner) { status ->
-            if (status.contains("Connected", true)) {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    binding.statusLabel.text = "Connecting..."
-                    delay(400)
-                    binding.statusLabel.text = "Partner Found..."
-                    delay(500)
-                    binding.statusLabel.text = "Connected ❤️"
-                    binding.statusLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.md_theme_status_green))
-                }
-            } else {
-                binding.statusLabel.text = status.ifBlank { getString(R.string.status_waiting) }
-                val color = when {
-                    status.contains("Invalid", true) -> R.color.md_theme_status_red
-                    else -> R.color.md_theme_status_amber
-                }
-                binding.statusLabel.setTextColor(ContextCompat.getColor(requireContext(), color))
+            binding.statusLabel.text = status
+            val color = when {
+                status.contains("Connected", true) -> R.color.md_theme_status_green
+                status.contains("failed", true) || status.contains("Invalid", true) -> R.color.md_theme_status_red
+                else -> R.color.md_theme_status_amber
             }
+            binding.statusLabel.setTextColor(ContextCompat.getColor(requireContext(), color))
         }
+
         viewModel.busy.observe(viewLifecycleOwner) { busy ->
-            binding.shareButton.isEnabled = !busy
             binding.joinButton.isEnabled = !busy
             binding.pairLoading.visibility = if (busy) View.VISIBLE else View.GONE
         }
