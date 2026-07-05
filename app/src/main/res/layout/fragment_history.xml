@@ -3,37 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp">
+    android:background="@drawable/bg_aurora_gradient"
+    android:padding="24dp">
 
     <!-- Top Header -->
-    <TextView
-        android:id="@+id/tv_history_title_prefix"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="History /"
-        android:textColor="@color/md_theme_accent"
-        android:textSize="14sp"
-        android:fontFamily="sans-serif-medium"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <TextView
         android:id="@+id/tv_history_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Timeline"
         android:textColor="@color/md_theme_onSurface"
-        android:textSize="26sp"
+        android:textSize="28sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/tv_history_title_prefix"
+        android:fontFamily="sans-serif-medium"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Search / Filter glass row -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/card_search"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/bg_glass_card"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
@@ -59,22 +50,35 @@
             android:textColorHint="@color/md_theme_accent"
             android:textColor="@color/md_theme_onSurface"
             android:background="@null"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:layout_marginStart="12dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_search_icon"
+            app:layout_constraintEnd_toStartOf="@+id/iv_filter_icon"
+            android:layout_marginEnd="12dp"/>
+            
+        <ImageView
+            android:id="@+id/iv_filter_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@android:drawable/ic_menu_sort_by_size"
+            app:tint="@color/love_pink"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Section Headers (Today / Yesterday / Earlier) -> In a real app this is handled by RecyclerView ItemDecorations or ViewTypes. For the UI mockup we just supply a RecyclerView -->
 
     <!-- RecyclerView for signals -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_history"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:scrollbars="vertical"
+        android:layout_marginTop="20dp"
+        android:scrollbars="none"
         android:clipToPadding="false"
         android:paddingBottom="100dp"
         app:layout_constraintTop_toBottomOf="@id/card_search"
@@ -96,28 +100,42 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:src="@drawable/ic_history"
-            app:tint="@color/md_theme_accent" />
+            app:tint="@color/md_theme_accent"
+            android:alpha="0.5" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="No signals yet"
             android:textColor="@color/md_theme_onSurface"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginTop="12dp" />
+            android:layout_marginTop="16dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Send a signal to start your history!"
             android:textColor="@color/md_theme_accent"
-            android:textSize="13sp"
-            android:layout_marginTop="4dp" />
+            android:textSize="14sp"
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
+    
+    <!-- Loading State View -->
+    <ProgressBar
+        android:id="@+id/history_loading"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:visibility="gone"
+        android:indeterminateTint="@color/voile_purple"
+        app:layout_constraintTop_toBottomOf="@id/card_search"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

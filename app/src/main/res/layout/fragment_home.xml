@@ -4,36 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:padding="20dp"
+    android:background="@drawable/bg_aurora_gradient"
     android:clipToPadding="false"
     android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="24dp"
         android:paddingBottom="100dp">
 
         <!-- Top Header: Greeting -->
-        <TextView
-            android:id="@+id/tv_home_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Home /"
-            android:textColor="@color/md_theme_accent"
-            android:textSize="14sp"
-            android:fontFamily="sans-serif-medium"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <TextView
             android:id="@+id/tv_greeting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Together Today"
             android:textColor="@color/md_theme_onSurface"
-            android:textSize="26sp"
+            android:textSize="28sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/tv_home_title"
+            android:fontFamily="sans-serif-medium"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Partner connection status card -->
@@ -41,7 +32,7 @@
             android:id="@+id/card_partner_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="24dp"
             android:background="@drawable/bg_glass_card"
             android:padding="20dp"
             app:layout_constraintTop_toBottomOf="@id/tv_greeting"
@@ -50,12 +41,12 @@
 
             <ImageView
                 android:id="@+id/iv_partner_avatar"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/ic_profile"
                 app:tint="@color/love_pink"
                 android:background="@drawable/bg_glass_card"
-                android:padding="8dp"
+                android:padding="12dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -66,23 +57,25 @@
                 android:layout_height="wrap_content"
                 android:text="Partner"
                 android:textColor="@color/md_theme_onSurface"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginStart="16dp"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@id/iv_partner_avatar"
                 app:layout_constraintBottom_toTopOf="@id/tv_connection_status"
-                app:layout_constraintStart_toEndOf="@id/iv_partner_avatar" />
+                app:layout_constraintStart_toEndOf="@id/iv_partner_avatar"
+                app:layout_constraintVertical_chainStyle="packed" />
 
             <TextView
                 android:id="@+id/tv_connection_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Offline"
-                android:textColor="@color/md_theme_status_amber"
+                android:text="Connected"
+                android:textColor="@color/md_theme_status_green"
                 android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
                 android:layout_marginStart="16dp"
                 app:layout_constraintTop_toBottomOf="@id/tv_partner_name"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/iv_partner_avatar"
                 app:layout_constraintStart_toEndOf="@id/iv_partner_avatar" />
 
             <!-- Active indicator dot -->
@@ -91,6 +84,7 @@
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:background="@drawable/status_dot"
+                android:backgroundTint="@color/md_theme_status_green"
                 android:layout_marginEnd="4dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -98,7 +92,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Stats row: Streak & Countdown -->
+        <!-- Stats row: Streak & Anniversary (Coming Soon) -->
         <LinearLayout
             android:id="@+id/row_quick_stats"
             android:layout_width="match_parent"
@@ -109,7 +103,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- Streak Card -->
+            <!-- Streak Card (Coming Soon) -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -123,34 +117,51 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_streak"
-                    app:tint="@color/coral_peach"
+                    app:tint="@color/md_theme_accent"
+                    android:alpha="0.5"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_streak_coming_soon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Coming Soon"
+                    android:textColor="@color/voile_purple"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/bg_status_pill"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_streak_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="27 Days"
+                    android:text="Love Streak"
                     android:textColor="@color/md_theme_onSurface"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
+                    android:alpha="0.5"
                     app:layout_constraintTop_toBottomOf="@id/iv_streak"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginTop="8dp" />
+                    android:layout_marginTop="12dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Love Streak"
+                    android:text="Premium Feature"
                     android:textColor="@color/md_theme_accent"
                     android:textSize="12sp"
+                    android:alpha="0.5"
                     app:layout_constraintTop_toBottomOf="@id/tv_streak_count"
                     app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- Anniversary Card -->
+            <!-- Anniversary Card (Coming Soon) -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -164,28 +175,45 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_heart"
-                    app:tint="@color/love_pink"
+                    app:tint="@color/md_theme_accent"
+                    android:alpha="0.5"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_anniversary_coming_soon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Coming Soon"
+                    android:textColor="@color/voile_purple"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/bg_status_pill"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_anniversary_days"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="20 Days"
+                    android:text="Anniversary"
                     android:textColor="@color/md_theme_onSurface"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
+                    android:alpha="0.5"
                     app:layout_constraintTop_toBottomOf="@id/iv_anniversary"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginTop="8dp" />
+                    android:layout_marginTop="12dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Anniversary"
+                    android:text="Premium Feature"
                     android:textColor="@color/md_theme_accent"
                     android:textSize="12sp"
+                    android:alpha="0.5"
                     app:layout_constraintTop_toBottomOf="@id/tv_anniversary_days"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -193,7 +221,7 @@
 
         </LinearLayout>
 
-        <!-- Daily Quote Card -->
+        <!-- Daily Quote Card (Coming Soon) -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/card_quote"
             android:layout_width="match_parent"
@@ -210,18 +238,20 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_quote"
-                app:tint="@color/voile_purple"
+                app:tint="@color/md_theme_accent"
+                android:alpha="0.5"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Daily relationship Quote"
+                android:text="Daily Quote (Coming Soon)"
                 android:textColor="@color/md_theme_onSurface"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:layout_marginStart="8dp"
+                android:alpha="0.5"
                 app:layout_constraintTop_toTopOf="@id/iv_quote_icon"
                 app:layout_constraintBottom_toBottomOf="@id/iv_quote_icon"
                 app:layout_constraintStart_toEndOf="@id/iv_quote_icon" />
@@ -230,11 +260,11 @@
                 android:id="@+id/tv_quote_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="There are testimonies of relationship waiting for you"
-                android:textColor="@color/md_theme_onSurface"
+                android:text="Premium members will receive daily relationship quotes and insights here."
+                android:textColor="@color/md_theme_accent"
                 android:textSize="14sp"
                 android:layout_marginTop="12dp"
-                android:fontFamily="sans-serif-light"
+                android:fontFamily="sans-serif"
                 app:layout_constraintTop_toBottomOf="@id/iv_quote_icon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -257,7 +287,7 @@
                 android:id="@+id/tv_shortcuts_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quick signal shortcuts"
+                android:text="Quick Signals"
                 android:textColor="@color/md_theme_onSurface"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -269,7 +299,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="16dp"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 app:layout_constraintTop_toBottomOf="@id/tv_shortcuts_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -277,72 +307,133 @@
                 <!-- Quick Love Button -->
                 <FrameLayout
                     android:id="@+id/btn_quick_love"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:background="@drawable/bg_glass_card"
                     android:clickable="true"
                     android:focusable="true"
-                    android:layout_margin="8dp">
+                    android:layout_marginHorizontal="8dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="❤️"
-                        android:textSize="28sp"
+                        android:textSize="24sp"
                         android:layout_gravity="center"/>
                 </FrameLayout>
 
                 <!-- Quick Hug Button -->
                 <FrameLayout
                     android:id="@+id/btn_quick_hug"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:background="@drawable/bg_glass_card"
                     android:clickable="true"
                     android:focusable="true"
-                    android:layout_margin="8dp">
+                    android:layout_marginHorizontal="8dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="🤗"
-                        android:textSize="28sp"
+                        android:textSize="24sp"
                         android:layout_gravity="center"/>
                 </FrameLayout>
 
                 <!-- Quick Kiss Button -->
                 <FrameLayout
                     android:id="@+id/btn_quick_kiss"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:background="@drawable/bg_glass_card"
                     android:clickable="true"
                     android:focusable="true"
-                    android:layout_margin="8dp">
+                    android:layout_marginHorizontal="8dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="💋"
-                        android:textSize="28sp"
+                        android:textSize="24sp"
                         android:layout_gravity="center"/>
                 </FrameLayout>
 
                 <!-- Quick Angry Button -->
                 <FrameLayout
                     android:id="@+id/btn_quick_angry"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:background="@drawable/bg_glass_card"
                     android:clickable="true"
                     android:focusable="true"
-                    android:layout_margin="8dp">
+                    android:layout_marginHorizontal="8dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="😤"
-                        android:textSize="28sp"
+                        android:textSize="24sp"
                         android:layout_gravity="center"/>
                 </FrameLayout>
 
             </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Recent Activity Header -->
+        <TextView
+            android:id="@+id/tv_recent_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recent Activity"
+            android:textColor="@color/md_theme_onSurface"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/card_shortcuts"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Recent Activity Empty State Placeholder -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_glass_card"
+            android:padding="32dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_recent_activity"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            
+            <ImageView
+                android:id="@+id/iv_empty_activity"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_history"
+                app:tint="@color/md_theme_accent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+                
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No recent signals"
+                android:textColor="@color/md_theme_onSurface"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                app:layout_constraintTop_toBottomOf="@id/iv_empty_activity"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+                
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your recent interactions will appear here"
+                android:textColor="@color/md_theme_accent"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"
+                app:layout_constraintTop_toBottomOf="@+id/iv_empty_activity"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
