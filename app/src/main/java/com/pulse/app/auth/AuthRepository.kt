@@ -1,5 +1,6 @@
 package com.pulse.app.auth
 
+import android.util.Base64
 import android.util.Log
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.messaging.FirebaseMessaging
@@ -14,7 +15,9 @@ import com.pulse.app.util.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.io.IOException
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 /**
@@ -134,17 +137,22 @@ class AuthRepository @Inject constructor(
      * Improved logout sequence: unregister the device FCM token before clearing local state.
      */
     suspend fun logout() = withContext(Dispatchers.IO) {
+        Log.i("AuthRepository", "Logout started")
         try {
             val currentFcmToken = FirebaseMessaging.getInstance().token.await()
             if (!currentFcmToken.isNullOrBlank()) {
-                apiService.unregisterDevice(UnregisterDeviceRequestDto(currentFcmToken))
+                try {
+                    apiService.unregisterDevice(UnregisterDeviceRequestDto(currentFcmToken))
+                    Log.i("AuthRepository", "Device unregister completed during logout")
+                } catch (e: Exception) {
+                    Log.w("AuthRepository", "Device unregister failed during logout; continuing logout", e)
+                }
             }
-        } catch (e: IOException) {
-            Log.e("AuthRepository", "Unregister during logout failed", e)
-        } catch (e: AuthException) {
-            Log.e("AuthRepository", "Unregister during logout failed", e)
+        } catch (e: Exception) {
+            Log.w("AuthRepository", "Unable to retrieve FCM token during logout; continuing logout", e)
         } finally {
             clear()
+            Log.i("AuthRepository", "Logout completed")
         }
     }
 
@@ -179,8 +187,8 @@ class AuthRepository @Inject constructor(
     }
 
     private suspend fun storeBackendSession(response: AuthLoginResponseDto) {
-        // Expiry parsing removed; rely on JWT expiration or 401 handling as per requirements.
-        tokenStore.save(response.token, null, null)
+        val expiryEpochSeconds = extractJwtExpirationEpoch(response.token)
+        tokenStore.save(response.token, null, expiryEpochSeconds)
 
         sessionManager.savePersonalCode(response.user.personalCode)
         sessionManager.saveCoupleId(response.user.coupleId)
@@ -188,8 +196,27 @@ class AuthRepository @Inject constructor(
         try {
             deviceRegistrationManager.registerCurrentDevice()
         } catch (e: IOException) {
-            Log.w("AuthRepository", "Post-login device registration failed", e)
+            Log.w("AuthRepository", "Device registration failed during login", e)
             throw AuthException.DeviceRegistrationFailed("Device registration failed", e)
+        }
+    }
+
+    private fun extractJwtExpirationEpoch(token: String): Long? {
+        val parts = token.split(".")
+        if (parts.size < 2) return null
+
+        return try {
+            val payload = parts[1]
+                .replace('-', '+')
+                .replace('_', '/')
+            val paddedPayload = payload + "=".repeat((4 - payload.length % 4) % 4)
+            val decodedBytes = Base64.decode(paddedPayload, Base64.NO_WRAP)
+            val payloadJson = String(decodedBytes, StandardCharsets.UTF_8)
+            val jsonObject = JSONObject(payloadJson)
+            val expiry = jsonObject.optLong("exp", Long.MIN_VALUE)
+            if (expiry == Long.MIN_VALUE) null else expiry
+        } catch (_: Exception) {
+            null
         }
     }
 
