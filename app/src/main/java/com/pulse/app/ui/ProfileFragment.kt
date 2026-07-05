@@ -26,8 +26,24 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Basic placeholder for Phase 1
-        binding.tvUserName.text = "User"
+        
+        val user = mainViewModel.getCurrentUser()
+        binding.tvUserName.text = user?.email?.substringBefore("@")?.replaceFirstChar { it.uppercase() } ?: "User"
+        binding.tvUserEmail.text = user?.email ?: "Unknown Email"
+
+        mainViewModel.personalCode.observe(viewLifecycleOwner) { code ->
+            binding.tvMyCode.text = code ?: "------"
+        }
+
+        mainViewModel.paired.observe(viewLifecycleOwner) { isPaired ->
+            binding.tvCoupleStatus.text = if (isPaired) "Paired" else "Not Paired"
+            val colorRes = if (isPaired) com.pulse.app.R.color.md_theme_status_green else com.pulse.app.R.color.md_theme_accent
+            binding.tvCoupleStatus.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), colorRes))
+            binding.btnDisconnect.visibility = if (isPaired) View.VISIBLE else View.GONE
+        }
+
+        binding.btnLogout.setOnClickListener { mainViewModel.logout() }
+        binding.btnDisconnect.setOnClickListener { mainViewModel.disconnectCouple() }
     }
 
     override fun onDestroyView() {

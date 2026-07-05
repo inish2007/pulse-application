@@ -26,8 +26,18 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Basic placeholder for Phase 1
-        binding.viewEmptyState.visibility = View.VISIBLE
+        
+        binding.rvHistory.visibility = View.GONE
+        binding.viewEmptyState.visibility = View.GONE
+        binding.historyLoading.visibility = View.VISIBLE
+
+        // Simulate fetching history. Since there is no HistoryAdapter in the 
+        // existing architecture, we simply display the premium empty state 
+        // as instructed ("Do NOT fabricate history").
+        mainViewModel.getPendingSignals { signals ->
+            binding.historyLoading.visibility = View.GONE
+            binding.viewEmptyState.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroyView() {

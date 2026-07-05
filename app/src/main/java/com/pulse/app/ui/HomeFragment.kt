@@ -26,8 +26,26 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Basic placeholder binding for Phase 1
+        
+        // Basic placeholder for partner name as backend doesn't store partner's name yet
         binding.tvPartnerName.text = "Partner"
+
+        mainViewModel.status.observe(viewLifecycleOwner) { statusText ->
+            binding.tvConnectionStatus.text = statusText
+        }
+
+        mainViewModel.partnerOnline.observe(viewLifecycleOwner) { isOnline ->
+            val colorRes = if (isOnline) com.pulse.app.R.color.md_theme_status_green else com.pulse.app.R.color.md_theme_accent
+            binding.vStatusDot.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                androidx.core.content.ContextCompat.getColor(requireContext(), colorRes)
+            )
+        }
+
+        // Quick Signals
+        binding.btnQuickLove.setOnClickListener { mainViewModel.sendEmotion("love") }
+        binding.btnQuickHug.setOnClickListener { mainViewModel.sendEmotion("hug") }
+        binding.btnQuickKiss.setOnClickListener { mainViewModel.sendEmotion("kiss") }
+        binding.btnQuickAngry.setOnClickListener { mainViewModel.sendEmotion("angry") }
     }
 
     override fun onDestroyView() {

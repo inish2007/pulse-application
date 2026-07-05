@@ -266,4 +266,21 @@ class MainViewModel @Inject constructor(
             _navEvents.postValue(Event(Destination.LOGIN))
         }
     }
+
+    fun getCurrentUser() = authRepository.currentUser()
+
+    fun getPendingSignals(onResult: (List<com.pulse.app.data.SignalDto>) -> Unit) {
+        viewModelScope.launch(ioDispatcher) {
+            try {
+                val signals = signalRepository.getPendingSignals()
+                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    onResult(signals)
+                }
+            } catch (e: Exception) {
+                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    onResult(emptyList())
+                }
+            }
+        }
+    }
 }
