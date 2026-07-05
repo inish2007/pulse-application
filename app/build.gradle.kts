@@ -67,6 +67,7 @@ dependencies {
     implementation("androidx.gridlayout:gridlayout:1.0.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.airbnb.android:lottie:6.3.0")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")

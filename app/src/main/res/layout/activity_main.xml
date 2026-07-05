@@ -57,6 +57,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_home"
+                    android:contentDescription="Home"
                     app:tint="@color/md_theme_onSurface" />
             </FrameLayout>
 
@@ -75,6 +76,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_quote"
+                    android:contentDescription="Activity"
                     app:tint="@color/md_theme_accent" />
             </FrameLayout>
 
@@ -100,6 +102,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_history"
+                    android:contentDescription="History"
                     app:tint="@color/md_theme_onSurface" />
             </FrameLayout>
 
@@ -118,6 +121,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_profile"
+                    android:contentDescription="Profile"
                     app:tint="@color/md_theme_onSurface" />
             </FrameLayout>
 
@@ -145,6 +149,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_send"
+            android:contentDescription="Send Signal"
             app:tint="@color/md_theme_onPrimary" />
 
     </FrameLayout>

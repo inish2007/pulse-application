@@ -72,19 +72,27 @@
 
     <!-- Section Headers (Today / Yesterday / Earlier) -> In a real app this is handled by RecyclerView ItemDecorations or ViewTypes. For the UI mockup we just supply a RecyclerView -->
 
-    <!-- RecyclerView for signals -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_history"
+    <!-- Swipe to refresh wrapper -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
-        android:scrollbars="none"
-        android:clipToPadding="false"
-        android:paddingBottom="100dp"
         app:layout_constraintTop_toBottomOf="@id/card_search"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- RecyclerView for signals -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:clipToPadding="false"
+            android:paddingBottom="100dp" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!-- Empty State View -->
     <LinearLayout

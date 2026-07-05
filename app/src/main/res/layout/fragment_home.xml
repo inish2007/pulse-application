@@ -312,6 +312,7 @@
                     android:background="@drawable/bg_glass_card"
                     android:clickable="true"
                     android:focusable="true"
+                    android:contentDescription="Quick Send Love"
                     android:layout_marginHorizontal="8dp">
                     <TextView
                         android:layout_width="wrap_content"
@@ -329,6 +330,7 @@
                     android:background="@drawable/bg_glass_card"
                     android:clickable="true"
                     android:focusable="true"
+                    android:contentDescription="Quick Send Hug"
                     android:layout_marginHorizontal="8dp">
                     <TextView
                         android:layout_width="wrap_content"
@@ -346,6 +348,7 @@
                     android:background="@drawable/bg_glass_card"
                     android:clickable="true"
                     android:focusable="true"
+                    android:contentDescription="Quick Send Kiss"
                     android:layout_marginHorizontal="8dp">
                     <TextView
                         android:layout_width="wrap_content"
@@ -363,6 +366,7 @@
                     android:background="@drawable/bg_glass_card"
                     android:clickable="true"
                     android:focusable="true"
+                    android:contentDescription="Quick Send Angry"
                     android:layout_marginHorizontal="8dp">
                     <TextView
                         android:layout_width="wrap_content"

@@ -9,6 +9,7 @@ import android.os.Looper
 import android.widget.Toast
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,7 @@ import com.pulse.app.R
 import com.pulse.app.databinding.ActivityMainBinding
 import com.pulse.app.work.PendingSignalsWorker
 import dagger.hilt.android.AndroidEntryPoint
+import com.google.android.material.snackbar.Snackbar
 import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
@@ -44,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         maybeRequestNotificationPermission()
         observeNavigation()
+        setupBottomNavigation()
         schedulePendingSync()
     }
 
@@ -111,7 +114,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.toast.observe(this) { msg ->
-            msg?.let { Toast.makeText(this, it.getContentIfNotHandled() ?: return@let, Toast.LENGTH_SHORT).show() }
+            msg?.let {
+                val message = it.getContentIfNotHandled() ?: return@let
+                val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+                snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.md_theme_surface))
+                snackbar.setTextColor(ContextCompat.getColor(this, R.color.md_theme_onSurface))
+                snackbar.setAnchorView(if (binding.bottomNavBar.visibility == View.VISIBLE) binding.bottomNavBar else null)
+                snackbar.show()
+            }
         }
 
         // Observe global auth state to handle logout navigation and clear backstack
@@ -126,6 +136,111 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun setupBottomNavigation() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        // Hide bottom nav on auth screens
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val authScreens = setOf(
+                R.id.authGateFragment,
+                R.id.loginFragment,
+                R.id.signupFragment,
+                R.id.pairFragment
+            )
+            val shouldShow = destination.id !in authScreens
+            
+            animateBottomNavVisibility(shouldShow)
+            updateBottomNavSelectedState(destination.id)
+        }
+
+        // Tab click listeners with NavOptions to avoid duplicate fragments
+        val navOptions = androidx.navigation.NavOptions.Builder()
+            .setLaunchSingleTop(true)
+            .setRestoreState(true)
+            .setPopUpTo(R.id.homeFragment, false, true)
+            .setEnterAnim(R.anim.fade_in)
+            .setExitAnim(R.anim.fade_out)
+            .setPopEnterAnim(R.anim.fade_in)
+            .setPopExitAnim(R.anim.fade_out)
+            .build()
+
+        binding.navHome.setOnClickListener {
+            navController.navigate(R.id.homeFragment, null, navOptions)
+        }
+        binding.navHistory.setOnClickListener {
+            navController.navigate(R.id.historyFragment, null, navOptions)
+        }
+        binding.navProfile.setOnClickListener {
+            navController.navigate(R.id.profileFragment, null, navOptions)
+        }
+        binding.fabSendSignal.setOnClickListener {
+            navController.navigate(R.id.signalFragment, null, navOptions)
+        }
+    }
+
+    private fun animateBottomNavVisibility(show: Boolean) {
+        val targetTranslationY = if (show) 0f else 200f
+        val targetAlpha = if (show) 1f else 0f
+        val visibility = if (show) android.view.View.VISIBLE else android.view.View.GONE
+        
+        if (show && binding.bottomNavBar.visibility == android.view.View.GONE) {
+            binding.bottomNavBar.visibility = android.view.View.VISIBLE
+            binding.fabSendSignal.visibility = android.view.View.VISIBLE
+            binding.bottomNavBar.translationY = 200f
+            binding.fabSendSignal.translationY = 200f
+            binding.bottomNavBar.alpha = 0f
+            binding.fabSendSignal.alpha = 0f
+        }
+
+        binding.bottomNavBar.animate()
+            .translationY(targetTranslationY)
+            .alpha(targetAlpha)
+            .setDuration(300)
+            .withEndAction {
+                if (!show) {
+                    binding.bottomNavBar.visibility = android.view.View.GONE
+                }
+            }
+            .start()
+
+        binding.fabSendSignal.animate()
+            .translationY(targetTranslationY)
+            .alpha(targetAlpha)
+            .setDuration(300)
+            .withEndAction {
+                if (!show) {
+                    binding.fabSendSignal.visibility = android.view.View.GONE
+                }
+            }
+            .start()
+    }
+
+    private fun updateBottomNavSelectedState(destinationId: Int) {
+        val colorActive = ContextCompat.getColor(this, R.color.md_theme_accent)
+        val colorInactive = ContextCompat.getColor(this, R.color.md_theme_onSurface)
+
+        binding.ivNavHome.imageTintList = android.content.res.ColorStateList.valueOf(
+            if (destinationId == R.id.homeFragment) colorActive else colorInactive
+        )
+        binding.ivNavHistory.imageTintList = android.content.res.ColorStateList.valueOf(
+            if (destinationId == R.id.historyFragment) colorActive else colorInactive
+        )
+        binding.ivNavProfile.imageTintList = android.content.res.ColorStateList.valueOf(
+            if (destinationId == R.id.profileFragment) colorActive else colorInactive
+        )
+        
+        // Scale animation for active tab
+        val scaleHome = if (destinationId == R.id.homeFragment) 1.2f else 1.0f
+        binding.ivNavHome.animate().scaleX(scaleHome).scaleY(scaleHome).setDuration(200).start()
+        
+        val scaleHistory = if (destinationId == R.id.historyFragment) 1.2f else 1.0f
+        binding.ivNavHistory.animate().scaleX(scaleHistory).scaleY(scaleHistory).setDuration(200).start()
+        
+        val scaleProfile = if (destinationId == R.id.profileFragment) 1.2f else 1.0f
+        binding.ivNavProfile.animate().scaleX(scaleProfile).scaleY(scaleProfile).setDuration(200).start()
     }
 
     private fun maybeRequestNotificationPermission() {

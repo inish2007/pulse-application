@@ -27,21 +27,41 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        binding.rvHistory.visibility = View.GONE
+        binding.swipeRefresh.visibility = View.VISIBLE
         binding.viewEmptyState.visibility = View.GONE
-        binding.historyLoading.visibility = View.VISIBLE
+        binding.historyLoading.visibility = View.GONE
+        binding.swipeRefresh.isRefreshing = true
 
-        // Simulate fetching history. Since there is no HistoryAdapter in the 
-        // existing architecture, we simply display the premium empty state 
-        // as instructed ("Do NOT fabricate history").
+        binding.swipeRefresh.setOnRefreshListener {
+            loadHistory()
+        }
+
+        loadHistory()
+    }
+
+    private fun loadHistory() {
         mainViewModel.getPendingSignals { signals ->
-            binding.historyLoading.visibility = View.GONE
-            binding.viewEmptyState.visibility = View.VISIBLE
+            binding.swipeRefresh.isRefreshing = false
+            
+            // Premium animation for empty state
+            if (binding.viewEmptyState.visibility == View.GONE) {
+                binding.viewEmptyState.alpha = 0f
+                binding.viewEmptyState.translationY = 50f
+                binding.viewEmptyState.visibility = View.VISIBLE
+                
+                binding.viewEmptyState.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(400)
+                    .setInterpolator(android.view.animation.OvershootInterpolator())
+                    .start()
+            }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.viewEmptyState.animate().cancel()
         _binding = null
     }
 }
