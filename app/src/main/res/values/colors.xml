@@ -10,4 +10,17 @@
     <color name="md_theme_status_red">#F45B69</color>
     <color name="md_theme_status_amber">#FFC107</color>
     <color name="md_pulse_glow">#805AE0FF</color>
+    
+    <!-- Redesign palette -->
+    <color name="love_pink">#FF7EB3</color>
+    <color name="voile_purple">#8E7CFF</color>
+    <color name="coral_peach">#FF7E5F</color>
+    <color name="light_red">#FF3366</color>
+    <color name="glass_border">#33FFFFFF</color>
+    <color name="glass_fill">#20111727</color>
+    <color name="glass_fill_light">#1AFFFFFF</color>
+    <color name="aurora_color_1">#2E0B0F1A</color>
+    <color name="aurora_color_2">#5E1E0045</color>
+    <color name="aurora_color_3">#4A003366</color>
 </resources>
+

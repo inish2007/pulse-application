@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_login_to_pair"
             app:destination="@id/pairFragment" />
+        <action
+            android:id="@+id/action_login_to_home"
+            app:destination="@id/homeFragment" />
     </fragment>
 
     <fragment
@@ -30,6 +33,9 @@
         <action
             android:id="@+id/action_signup_to_pair"
             app:destination="@id/pairFragment" />
+        <action
+            android:id="@+id/action_signup_to_home"
+            app:destination="@id/homeFragment" />
     </fragment>
 
     <fragment
@@ -37,12 +43,38 @@
         android:name="com.pulse.app.ui.PairFragment"
         android:label="Pair">
         <action
-            android:id="@+id/action_pair_to_signal"
+            android:id="@+id/action_pair_to_home"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.pulse.app.ui.HomeFragment"
+        android:label="Home">
+        <action
+            android:id="@+id/action_home_to_signal"
             app:destination="@id/signalFragment" />
+        <action
+            android:id="@+id/action_home_to_history"
+            app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_home_to_profile"
+            app:destination="@id/profileFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/signalFragment"
         android:name="com.pulse.app.ui.SignalFragment"
         android:label="Signal" />
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.pulse.app.ui.HistoryFragment"
+        android:label="History" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.pulse.app.ui.ProfileFragment"
+        android:label="Profile" />
 </navigation>
+
